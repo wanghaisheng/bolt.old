@@ -8,22 +8,41 @@ import { OpenAIPrompts } from './openai-prompts';
 
 export class OpenAILLM implements LLM {
   private apiKey: string = '';
+  private apiURL: string = '';
 
   setApiKey(apiKey: string) {
     this.apiKey = apiKey;
   }
-
+  setApiURL(apiURL: string) {
+    this.apiURL = apiURL;
+  }
   streamText(messages: Messages, env: Env, options?: StreamingOptions) {
     if (!this.apiKey) {
         try {
             this.apiKey = env.OPENAI_API_KEY;
+          
         } catch (error) {
 
           throw new Error('API key is not set for OpenAILLM');
         }
     }
+    if (!this.apiURL) {
+        try {
+            this.apiURL = env.OPENAI_API_URL;
+          
+        } catch (error) {
 
-    const openai = createOpenAI({ apiKey: this.apiKey, compatibility: 'strict' });
+          throw new Error('API URL is not set for OpenAILLM');
+        }
+    }
+
+    
+
+    const openai = createOpenAI({ 
+      apiKey: this.apiKey, 
+      basePath: this.apiURL + '/v1'
+
+      compatibility: 'strict' });
     type model_name_t = 'gpt-4o' | 'gpt-4o-mini' | 'o1-mini' | 'o1-preview';
     const model_name = process.env.OPENAI_MODEL as model_name_t;
     const model = openai(model_name);
