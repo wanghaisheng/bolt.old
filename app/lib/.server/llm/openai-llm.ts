@@ -40,7 +40,8 @@ export class OpenAILLM implements LLM {
 
     const openai = createOpenAI({ 
       apiKey: this.apiKey, 
-      basePath: this.apiURL + '/v1'
+      baseURL: this.apiURL ?? 'https://api.openai.com/v1'
+
 
       compatibility: 'strict' });
     type model_name_t = 'gpt-4o' | 'gpt-4o-mini' | 'o1-mini' | 'o1-preview';
